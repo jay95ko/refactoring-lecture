@@ -1,18 +1,31 @@
 import fs from 'fs';
 
-if (!process.argv[2]) {
-  throw new Error('파일 이름을 입력하세요');
+function fileValidation(args) {
+  if (!args[2]) {
+    throw new Error('파일 이름을 입력하세요');
+  }
+
+  const fileName = `./${args[2]}.json`;
+  if (!fs.existsSync(fileName)) {
+    throw new Error('파일이 존재하지 않습니다');
+  }
+  return {
+    fileName,
+    countOnlyReady: args.includes('-r'),
+  };
 }
 
-const fileName = `./${process.argv[2]}.json`;
-if (!fs.existsSync(fileName)) {
-  throw new Error('파일이 존재하지 않습니다');
+function transFileForm(fileName) {
+  const rawData = fs.readFileSync(fileName);
+  const orders = JSON.parse(rawData);
+  return orders;
 }
 
-const rawData = fs.readFileSync(fileName);
-const orders = JSON.parse(rawData);
-if (process.argv.includes('-r')) {
-  console.log(orders.filter((order) => order.status === 'ready').length);
-} else {
-  console.log(orders.length);
+function printOrderLength(orders, countOnlyReady) {
+  const filteredOrder = countOnlyReady ? orders.filter((order) => order.status === 'ready') : orders;
+  console.log(filteredOrder.length);
 }
+
+const { fileName, countOnlyReady } = fileValidation(process.argv);
+const orders = transFileForm(fileName);
+printOrderLength(orders, countOnlyReady);
