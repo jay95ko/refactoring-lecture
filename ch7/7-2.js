@@ -11,11 +11,16 @@ export class Person {
   }
 
   get courses() {
-    return this.#courses;
+    return [ ...this.#courses ];
   }
 
-  set courses(courses) {
-    this.#courses = courses;
+  addCourse(course) {
+    this.#courses.push(course);
+  }
+
+  removeCourse(course){
+    const index = this.#courses.indexOf(course);
+    this.#courses.splice(index, 1)
   }
 }
 
