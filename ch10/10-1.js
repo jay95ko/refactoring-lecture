@@ -1,7 +1,17 @@
+const isSummer = (date, plan) => {
+  return !date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd)
+}
+
+function summerCharge(quantity, plan) {
+  return quantity * plan.summerRate;
+}
+
+function regularCharge(quantity, plan) {
+  return quantity * plan.regularRate + plan.regularServiceCharge;
+}
+
 function calculateCharge(date, quantity, plan) {
-  let charge = 0;
-  if (!date.isBefore(plan.summerStart) && !date.isAfter(plan.summerEnd))
-    charge = quantity * plan.summerRate;
-  else charge = quantity * plan.regularRate + plan.regularServiceCharge;
-  return charge;
+  return isSummer(date, plan)
+    ? summerCharge(quantity, plan)
+    : regularCharge(quantity, plan);
 }
