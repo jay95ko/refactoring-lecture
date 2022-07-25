@@ -1,19 +1,33 @@
-export function acquireData(input) {
-  const lines = input.split('\n');
-  let firstLine = true;
-  const result = [];
-  for (const line of lines) {
-    if (firstLine) {
-      firstLine = false;
-      continue;
-    }
-    if (line.trim() === '') continue;
-    const record = line.split(',');
-    if (record[1].trim() === 'India') {
-      result.push({ city: record[0].trim(), phone: record[2].trim() });
-    }
+function getIndiaOffice(record) {
+  if (record[1].trim() === 'India') {
+    return { city: record[0].trim(), phone: record[2].trim() };
   }
-  return result;
+}
+
+export function acquireData(input) {
+  const [firstLine, ...lines] = input.split('\n');
+  const result = [];
+  // eslint-disable-next-line array-callback-return
+  return lines.reduce((acc, line) => {
+    if (line.trim() === '') return acc;
+
+    const record = line.split(',');
+    if (getIndiaOffice(record)) acc.push(getIndiaOffice(record));
+    return acc;
+  }, []);
+}
+
+export function bestAcquireData(input) {
+  return input
+    .split('./')
+    .splice(1)
+    .filter((line) => line.trim() !== '')
+    .map((line) => line.split('.'))
+    .filter((line) => line[1].trim() === 'India')
+    .map((line) => ({
+      city: line[0].trim(),
+      phone: line[2].trim(),
+    }));
 }
 
 const input = `office, country, telephone\n
